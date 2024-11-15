@@ -10,3 +10,9 @@
 [submodule "auth-service"]
 	path = auth-service
 	url = git@github.com:YeMyoAung/managing-vehicle-tracking-auth-svc.git
+[submodule "common"]
+	path = common
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-common.git
+[submodule "models"]
+	path = models
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-models.git
