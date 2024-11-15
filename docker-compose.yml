@@ -1,0 +1,85 @@
+version: "3.8"
+services:
+  auth:
+    build: ./auth-service
+    ports:
+      - "10000:10000"
+    networks:
+      - private
+    depends_on:
+      - mongo
+    entrypoint: [ "sh", "-c", "until nc -z mongo 27017; do sleep 1; done; ./auth-svc" ]
+    restart: on-failure
+
+  vehicle:
+    build: ./vehicle-service
+    ports:
+      - "10001:10001"
+    networks:
+      - private
+    depends_on:
+      - mongo
+      - broker
+      - auth
+    entrypoint: [ "sh", "-c", "until nc -z mongo 27017 && nc -z broker 5672 && nc -z auth 10000; do sleep 1; done; ./vehicle-svc" ]
+    restart: on-failure
+
+  tracking:
+    build: ./tracking-service
+    ports:
+      - "10002:10002"
+    networks:
+      - private
+    depends_on:
+      - mongo
+      - broker
+      - auth
+    entrypoint: [ "sh", "-c", "until nc -z mongo 27017 && nc -z broker 5672 && nc -z auth 10000; do sleep 1; done; ./tracking-svc" ]
+    restart: on-failure
+
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "10003:80"
+    networks:
+      - private
+
+  gateway:
+    build: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - private
+    depends_on:
+      - auth
+      - vehicle
+      - tracking
+      - dashboard
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - private
+    env_file:
+      - .env.mongo
+    volumes:
+      - ./data/mongo:/data/db
+
+  broker:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - private
+    env_file:
+      - .env.broker
+
+networks:
+  private:
+    driver: bridge
+
+volumes:
+  mongo_data:

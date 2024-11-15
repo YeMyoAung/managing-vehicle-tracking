@@ -1,0 +1,12 @@
+[submodule "dashboard"]
+	path = dashboard
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-dashboard.git
+[submodule "vehicle-service"]
+	path = vehicle-service
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-vehicle-svc.git
+[submodule "tracking-service"]
+	path = tracking-service
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-tracking-svc.git
+[submodule "auth-service"]
+	path = auth-service
+	url = git@github.com:YeMyoAung/managing-vehicle-tracking-auth-svc.git
